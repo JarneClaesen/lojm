@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "989401234700",
+    "project_id": "orchestraapp-18565",
+    "storage_bucket": "orchestraapp-18565.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:989401234700:android:a8992ee4e6fca5bd521d29",
+        "android_client_info": {
+          "package_name": "be.pxl.orchestra_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7SlCae5iGZsJEGwD39gSO8P7g64fau5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

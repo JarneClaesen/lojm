@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/button.dart';
 import '../components/text_field.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  final Function()? onTap;
+  const RegisterPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -13,6 +15,44 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
+  final comfirmPasswordTextController = TextEditingController();
+
+  // sign user up
+  void signUp() async {
+
+    if (passwordTextController.text != comfirmPasswordTextController.text) {
+      displayMessage('Passwords do not match');
+      return;
+    }
+
+    //show loading circle
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      // create user
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailTextController.text,
+        password: passwordTextController.text
+      );
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+      displayMessage(e.code);
+    }
+  }
+
+  void displayMessage(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +95,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 10),
 
                 // comfirm password textfield
-                MyTextField(controller: passwordTextController, hintText: 'Comfirm Password', obscureText: true),
+                MyTextField(controller: comfirmPasswordTextController, hintText: 'Comfirm Password', obscureText: true),
 
                 const SizedBox(height: 25),
 
                 //signin button
-                MyButton(onTap: () {}, text: 'Sign Up'),
+                MyButton(onTap: signUp, text: 'Sign Up'),
 
                 const SizedBox(height: 10),
 
@@ -74,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: widget.onTap,
                       child: const Text('Login'),
                     ),],
                 )
