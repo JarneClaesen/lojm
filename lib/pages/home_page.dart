@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:orchestra_app/components/drawer.dart';
 import 'package:orchestra_app/components/message_post.dart';
 import 'package:orchestra_app/components/text_field.dart';
+import 'package:orchestra_app/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -45,6 +47,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // navigate to profile page
+  void goToProfilePage() {
+    Navigator.pop(context);
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +62,10 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: const Text('Orchestra App'),
           backgroundColor: Colors.blueGrey[900],
-          actions: [
-            IconButton(
-              onPressed: logout,
-              icon: const Icon(Icons.logout),
-            ),
-          ],
+        ),
+        drawer: MyDrawer(
+          onProfileTap: goToProfilePage,
+          onSignOut: logout,
         ),
         body: Center(
           child: Column(
