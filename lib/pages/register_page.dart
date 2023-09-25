@@ -47,6 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'Instrument': '',
         'Bio': 'Empty bio',
         'ProfilePicture': '',
+        'IsAdmin': false,
       });
 
       if (context.mounted) {

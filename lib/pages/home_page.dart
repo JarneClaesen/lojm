@@ -6,6 +6,8 @@ import 'package:orchestra_app/components/message_post.dart';
 import 'package:orchestra_app/components/text_field.dart';
 import 'package:orchestra_app/pages/profile_page.dart';
 
+import '../helper/helper_methods.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -50,7 +52,6 @@ class _HomePageState extends State<HomePage> {
   // navigate to profile page
   void goToProfilePage() {
     Navigator.pop(context);
-
     Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
   }
 
@@ -58,10 +59,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           title: const Text('Orchestra App'),
-          backgroundColor: Colors.blueGrey[900],
         ),
         drawer: MyDrawer(
           onProfileTap: goToProfilePage,
@@ -84,8 +84,9 @@ class _HomePageState extends State<HomePage> {
                             return messagePost(
                               message: message['Message'],
                               user: message['UserEmail'],
-                              postID: message.id,
+                              postId: message.id,
                               likes: List<String>.from(message['Likes'] ?? []),
+                              time: formatDate(message['TimeStamp'])
                             );// Ensure MessagePost widget accepts these parameters
                           },
                         );
