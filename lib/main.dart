@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:orchestra_app/auth/auth.dart';
 import 'package:orchestra_app/auth/login_or_register.dart';
 import 'package:orchestra_app/firebase_options.dart';
@@ -13,6 +14,16 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Make system nav bar have the same color as the bottom nav bar
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  SystemChrome.setSystemUIOverlayStyle(
+  const SystemUiOverlayStyle(
+  systemNavigationBarColor: Colors.transparent,
+  ),
+  );
+
   runApp(
       ChangeNotifierProvider(create: (context) => ThemeProvider(), child: const MyApp()),
   );

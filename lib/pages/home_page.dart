@@ -5,6 +5,7 @@ import 'package:orchestra_app/components/drawer.dart';
 import 'package:orchestra_app/components/message_post.dart';
 import 'package:orchestra_app/components/text_field.dart';
 import 'package:orchestra_app/pages/profile_page.dart';
+import 'package:orchestra_app/pages/scores_page.dart';
 
 import '../helper/helper_methods.dart';
 
@@ -55,6 +56,11 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
   }
 
+  void goToScoresPage() {
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const ScoresPage()));
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +72,7 @@ class _HomePageState extends State<HomePage> {
         drawer: MyDrawer(
           onProfileTap: goToProfilePage,
           onSignOut: logout,
+          onScoresTap: goToScoresPage,
         ),
         body: Center(
           child: Column(
