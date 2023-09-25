@@ -94,7 +94,7 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
                     },
                   ),
                   title: Text(
-                    isLightMode ? 'L I G H T  M O D E' : 'D A R K  M O D E',
+                    isLightMode ? 'D A R K  M O D E' : 'L I G H T  M O D E',
                     style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {

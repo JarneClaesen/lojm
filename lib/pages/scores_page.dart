@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:orchestra_app/pages/pdf_viewer_page.dart';
 import 'package:orchestra_app/pages/profile_page.dart';
 import 'package:orchestra_app/components/drawer.dart';
-import 'package:orchestra_app/components/PDFFetcher.dart';
-import 'package:orchestra_app/components/PDFDownloader.dart';
+import 'package:orchestra_app/components/pdf_fetcher.dart';
+import 'package:orchestra_app/components/pdf_downloader.dart';
 import 'package:orchestra_app/components/scores_list.dart';
-import 'package:orchestra_app/components/PDFDisplay.dart';
+import 'package:orchestra_app/components/pdf_display.dart';
 
 import '../components/scores_list.dart';
 
