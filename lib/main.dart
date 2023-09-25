@@ -14,22 +14,21 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    ChangeNotifierProvider(create: (context) => ThemeProvider(), child: const MyApp()),
+      ChangeNotifierProvider(create: (context) => ThemeProvider(), child: const MyApp()),
   );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: Provider.of<ThemeProvider>(context).getTheme,
-        title: 'Flutter Demo',
-        home: const AuthPage(),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: Provider.of<ThemeProvider>(context).getTheme,
+      title: 'Flutter Demo',
+      home: const AuthPage(),
     );
   }
 }
