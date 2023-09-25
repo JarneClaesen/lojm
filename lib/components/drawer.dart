@@ -55,21 +55,17 @@ class MyDrawer extends StatelessWidget {
                   // Dark mode / Light mode toggle button
                   ListTile(
                     leading: Icon(
-                      themeProvider.getTheme == lightTheme
-                          ? Icons.light_mode
-                          : Icons.dark_mode,
+                      themeProvider.getTheme == lightTheme ? Icons.dark_mode : Icons.light_mode,
                       color: Colors.white,
                     ),
                     title: Text(
-                      themeProvider.getTheme == lightTheme ? 'L I G H T  M O D E' : 'D A R K  M O D E',
+                      themeProvider.getTheme == lightTheme ? 'D A R K  M O D E' : 'L I G H T  M O D E',
                       style: TextStyle(color: Colors.white),
                     ),
                     onTap: () {
-                      Provider.of<ThemeProvider>(context, listen: false)
-                          .toggleTheme();
+                      Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
                     },
                   ),
-
                   // logout list tile
                   Padding(
                     padding: const EdgeInsets.only(bottom: 25.0),
