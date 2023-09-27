@@ -10,20 +10,25 @@ import 'like_button.dart';
 
 class messagePost extends StatefulWidget {
 
+  final String firstName;
+  final String lastName;
   final String message;
   final String user;
+  final String date;
   final String time;
   final String postId;
   final List<String> likes;
 
   const messagePost({
     Key? key,
+    required this.firstName,
+    required this.lastName,
     required this.message,
     required this.user,
-    //required this.time,
+    required this.date,
+    required this.time,
     required this.postId,
     required this.likes,
-    required this.time,
   }) : super(key: key);
 
   @override
@@ -72,7 +77,7 @@ class _messagePostState extends State<messagePost> {
     FirebaseFirestore.instance.collection("messages").doc(widget.postId).collection("comments").add({
       'CommentText': commentText,
       'CommentedBy': currentUser?.email,
-      'CommentTime': Timestamp.now(), // todo format this
+      'CommentTime': Timestamp.now(),
     });
   }
 
@@ -163,19 +168,24 @@ class _messagePostState extends State<messagePost> {
       ),
 
       margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.grey[300],
-              child: Icon(Icons.person, color: Colors.grey[400]),
-            ),
-          ),
           SizedBox(width: 20),
+
+          Row(
+            children: [
+              // user
+              Text(
+                widget.firstName + ' ' + widget.lastName,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
 
           // wallpost
           Row(
@@ -187,19 +197,25 @@ class _messagePostState extends State<messagePost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
+                  //const SizedBox(height: 3),
+
+                  // DateTime
+                  Row(
+                    children: [
+                      Text(widget.date, style: TextStyle(color: Colors.grey[400])),
+                      Text(' at ', style: TextStyle(color: Colors.grey[400])),
+                      Text(widget.time, style: TextStyle(color: Colors.grey[400])),
+                    ],
+                  ),
+
+                  const SizedBox(height: 5),
+
                   // message
                   Text(widget.message),
 
                   const SizedBox(height: 5),
 
-                  // user
-                  Row(
-                    children: [
-                      Text(widget.user, style: TextStyle(color: Colors.grey[400])),
-                      Text('.', style: TextStyle(color: Colors.grey[400])),
-                      Text(widget.time, style: TextStyle(color: Colors.grey[400])),
-                    ],
-                  ),
+
 
                   SizedBox(height: 10),
 
@@ -215,11 +231,11 @@ class _messagePostState extends State<messagePost> {
 
           //buttons
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
 
               // LIKE
-              Column(
+              Row(
                 children: [
                   LikeButton(
                     isLiked: isLiked,
@@ -237,22 +253,6 @@ class _messagePostState extends State<messagePost> {
 
               const SizedBox(width: 10),
 
-              // COMMENT
-              Column(
-                children: [
-                  CommentButton(onTap: showComentDialog),
-
-                  const SizedBox(height: 5),
-
-                  // Comment count
-                  Text(
-                    widget.likes.length.toString(),
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
 

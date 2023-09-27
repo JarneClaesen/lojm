@@ -7,7 +7,8 @@ class ThemeProvider extends ChangeNotifier {
   ThemeData _themeData;
   final String key = "theme";
 
-  ThemeProvider() : _themeData = lightTheme {
+  ThemeProvider(Brightness systemBrightness)
+      : _themeData = systemBrightness == Brightness.dark ? darkTheme : lightTheme {
     _loadTheme();
   }
 
@@ -23,6 +24,10 @@ class ThemeProvider extends ChangeNotifier {
       } else {
         _themeData = lightTheme;
       }
+      notifyListeners();
+    } else {
+      // If no preference is found in SharedPreferences, keep the theme as the system's brightness.
+      // The _themeData is already initialized in the constructor, so no need to set it again.
       notifyListeners();
     }
   }

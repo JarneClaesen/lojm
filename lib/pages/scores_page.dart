@@ -11,6 +11,8 @@ import 'package:orchestra_app/components/pdf_display.dart';
 
 import '../components/scores_list.dart';
 
+//todo: add a loading circle when downloading pdfs
+
 class ScoresPage extends StatefulWidget {
   const ScoresPage({super.key});
 

@@ -31,9 +31,13 @@ class _HomePageState extends State<HomePage> {
     // only post if there is something in the textfield
     if (textController.text.isNotEmpty) {
       try {
+        Map<String, String> userDetails = await fetchUserDetails(currentUser?.email ?? '');
+
         // store in firebase
         await FirebaseFirestore.instance.collection("messages").add({
           'UserEmail': currentUser?.email,
+          'FirstName': userDetails['firstName'],
+          'LastName': userDetails['lastName'],
           'Message': textController.text,
           'TimeStamp': Timestamp.now(),
           'Likes': [],
@@ -49,6 +53,23 @@ class _HomePageState extends State<HomePage> {
       textController.clear();
     });
   }
+
+  Future<Map<String, String>> fetchUserDetails(String email) async {
+    Map<String, String> userDetails = {'firstName': '', 'lastName': ''};
+
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(email).get();
+      if (userDoc.exists) {
+        userDetails['firstName'] = userDoc['FirstName'] ?? '';
+        userDetails['lastName'] = userDoc['LastName'] ?? '';
+      }
+    } catch (e) {
+      print("Error fetching user details: $e");
+    }
+
+    return userDetails;
+  }
+
 
   // navigate to profile page
   void goToProfilePage() {
@@ -89,11 +110,14 @@ class _HomePageState extends State<HomePage> {
                             //get the message
                             final message = snapshot.data!.docs[index];
                             return messagePost(
+                              firstName: message['FirstName'],
+                              lastName: message['LastName'],
                               message: message['Message'],
                               user: message['UserEmail'],
                               postId: message.id,
                               likes: List<String>.from(message['Likes'] ?? []),
-                              time: formatDate(message['TimeStamp'])
+                              date: formatDate(message['TimeStamp']),
+                              time: formatTime(message['TimeStamp'])
                             );// Ensure MessagePost widget accepts these parameters
                           },
                         );

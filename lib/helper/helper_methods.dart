@@ -9,6 +9,16 @@ String formatDate(Timestamp timestamp) {
   String month = dateTime.month.toString();
   String day = dateTime.day.toString();
 
-  String formattedDate = "$month/$day/$year";
+  String formattedDate = "$day/$month/$year";
   return formattedDate;
+}
+
+String formatTime(Timestamp timestamp) {
+  DateTime dateTime = timestamp.toDate();
+
+  String hour = dateTime.hour.toString();
+  String minute = dateTime.minute.toString();
+
+  String formattedTime = "$hour:$minute";
+  return formattedTime;
 }

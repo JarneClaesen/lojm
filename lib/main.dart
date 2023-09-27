@@ -24,8 +24,12 @@ void main() async {
   ),
   );
 
+  final initialBrightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
   runApp(
-      ChangeNotifierProvider(create: (context) => ThemeProvider(), child: const MyApp()),
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(initialBrightness),
+      child: const MyApp(),
+    ),
   );
 }
 

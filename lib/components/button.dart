@@ -18,7 +18,7 @@ class MyButton extends StatelessWidget {
         //height: 50,
         //width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.onSurface, // todo kleur van de button aanpassen zodat het in light mode zwart is en iets anders in dark mode
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
