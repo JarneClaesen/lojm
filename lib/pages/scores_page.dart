@@ -27,6 +27,7 @@ class _ScoresPageState extends State<ScoresPage> {
   final currentUser = FirebaseAuth.instance.currentUser;
   final PDFFetcher pdfFetcher;
   final PDFDownloader pdfDownloader;
+  bool _loading = true;
 
   late AuthenticationMethods authenticationMethods;
 
@@ -42,9 +43,17 @@ class _ScoresPageState extends State<ScoresPage> {
   }
 
   _initPdfs() async {
+    setState(() {
+      _loading = true;
+    });
+
     pdfs = await pdfFetcher.fetchPDFs();
-    setState(() {});
+
+    setState(() {
+      _loading = false;
+    });
   }
+
 
   Future<String> _downloadPdf(String pdfName) async {
     final userDocument = await FirebaseFirestore.instance.collection("Users").doc(currentUser?.email).get();
@@ -61,6 +70,7 @@ class _ScoresPageState extends State<ScoresPage> {
   @override
   Widget build(BuildContext context) {
     final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scores'),
@@ -70,7 +80,11 @@ class _ScoresPageState extends State<ScoresPage> {
         onSignOut: authenticationMethods.logout,
         onScoresTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScoresPage())),
       ),
-      body: isLandscape
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())  // Display loading circle
+          : pdfs.isEmpty
+          ? const Center(child: Text("No scores"))  // Display 'No scores' text
+          : isLandscape
           ? Row(
         children: [
           Expanded(child: ScoresList(pdfs: pdfs, onPdfSelected: _onPdfSelected, onDownload: _downloadPdf)),
