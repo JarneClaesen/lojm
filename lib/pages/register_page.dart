@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/button.dart';
+import '../components/dropdown.dart';
 import '../components/text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -17,9 +18,28 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
   final comfirmPasswordTextController = TextEditingController();
+  final firstNameTextController = TextEditingController();
+  final lastNameTextController = TextEditingController();
+
+  List<String> instruments = ['Violin', 'Viola', 'Cello', 'Double Bass', 'Flute', 'Oboe', 'Clarinet', 'Bassoon', 'Trumpet', 'Trombone', 'Horn', 'Tuba', 'Percussion', 'Piano', 'Harp'];
+  String? selectedInstrument;
 
   // sign user up
   void signUp() async {
+
+    if (firstNameTextController.text.isEmpty ||
+        lastNameTextController.text.isEmpty ||
+        emailTextController.text.isEmpty ||
+        passwordTextController.text.isEmpty ||
+        comfirmPasswordTextController.text.isEmpty) { // 4. Check all fields are filled
+      displayMessage('Please fill in all fields.');
+      return;
+    }
+
+    if (selectedInstrument == null) {
+      displayMessage('Please select an instrument.');
+      return;
+    }
 
     if (passwordTextController.text != comfirmPasswordTextController.text) {
       displayMessage('Passwords do not match');
@@ -42,9 +62,9 @@ class _RegisterPageState extends State<RegisterPage> {
       // after creating user, create new document in could firestore called users
       FirebaseFirestore.instance.collection("Users").doc(userCredential.user!.email).set({
         'Username': emailTextController.text.split("@")[0],
-        'FirstName': '',
-        'LastName': '',
-        'Instrument': '',
+        'FirstName': firstNameTextController.text,
+        'LastName': lastNameTextController.text,
+        'Instrument': selectedInstrument ?? 'Not selected',
         'Bio': 'Empty bio',
         'ProfilePicture': '',
         'IsAdmin': false,
@@ -78,12 +98,12 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
 
                 //logo
-                const Icon(Icons.lock, size: 100),
+                const Icon(Icons.lock, size: 50),
 
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
 
                 // welcome back message
                 Text(
@@ -95,7 +115,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
 
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
+
+                // First name textfield
+                MyTextField(controller: firstNameTextController, hintText: 'First Name', obscureText: false),
+
+                const SizedBox(height: 10),
+
+                // Last name textfield
+                MyTextField(controller: lastNameTextController, hintText: 'Last Name', obscureText: false),
+
+                const SizedBox(height: 10),
 
                 // email textfield
                 MyTextField(controller: emailTextController, hintText: 'Email', obscureText: false),
@@ -109,6 +139,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 // comfirm password textfield
                 MyTextField(controller: comfirmPasswordTextController, hintText: 'Comfirm Password', obscureText: true),
+
+                const SizedBox(height: 25),
+
+                // instrument dropdown
+                MyDropdown(
+                  items: instruments,
+                  selectedItem: selectedInstrument,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedInstrument = newValue;
+                    });
+                  },
+                ),
 
                 const SizedBox(height: 25),
 

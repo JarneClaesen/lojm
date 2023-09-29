@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:orchestra_app/components/text_box.dart';
 
+import '../components/dropdown.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -15,6 +17,9 @@ class _ProfilePageState extends State<ProfilePage> {
   final currentUser = FirebaseAuth.instance.currentUser;
   // all users
   final usersCollection = FirebaseFirestore.instance.collection("Users");
+
+  List<String> instruments = ['Violin', 'Viola', 'Cello', 'Double Bass', 'Flute', 'Oboe', 'Clarinet', 'Bassoon', 'Trumpet', 'Trombone', 'Horn', 'Tuba', 'Percussion', 'Piano', 'Harp'];
+  String? selectedInstrument;
 
   // edit field
   Future<void> editField(String field) async {
@@ -70,6 +75,54 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // edit instrument
+  Future<void> editInstrument() async {
+    String? newInstrument;
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.grey[900],
+          title: Text("Edit Instrument",
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          content: MyDropdown(
+            items: instruments,
+            selectedItem: selectedInstrument,
+            onChanged: (newValue) {
+              setState(() {
+                selectedInstrument = newValue;
+              });
+            },
+          ),
+          actions: [
+            // cancel button
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+
+            // save button
+            TextButton(
+              child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white)
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (selectedInstrument != null) {
+                  usersCollection.doc(currentUser?.email).update({
+                    'Instrument': selectedInstrument,
+                  });
+                }
+              },
+            ),
+          ],
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -123,6 +176,27 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: userData['Username'] ?? '',
                   sectionName: 'Username',
                   onPressed: () => editField('Username'),
+                ),
+
+                // first name
+                MyTextBox(
+                  text: userData['FirstName'] ?? '',
+                  sectionName: 'First Name',
+                  onPressed: () => editField('FirstName'),
+                ),
+
+                // last name
+                MyTextBox(
+                  text: userData['LastName'] ?? '',
+                  sectionName: 'Last Name',
+                  onPressed: () => editField('LastName'),
+                ),
+
+                // instrument
+                MyTextBox(
+                  text: userData['Instrument'] ?? 'Not selected',
+                  sectionName: 'Instrument',
+                  onPressed: () => editInstrument(),  // Note the change to editInstrument here
                 ),
 
                 // bio
