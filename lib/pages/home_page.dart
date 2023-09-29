@@ -8,6 +8,7 @@ import 'package:orchestra_app/pages/profile_page.dart';
 import 'package:orchestra_app/pages/scores_page.dart';
 
 import '../helper/helper_methods.dart';
+import '../helper/authentication_methods.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,9 +24,7 @@ class _HomePageState extends State<HomePage> {
   // user
   final currentUser = FirebaseAuth.instance.currentUser;
 
-  void logout() {
-    FirebaseAuth.instance.signOut();
-  }
+  late AuthenticationMethods authenticationMethods;
 
   void postMessage() async {
     // only post if there is something in the textfield
@@ -54,6 +53,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    authenticationMethods = AuthenticationMethods(context);
+  }
+
   Future<Map<String, String>> fetchUserDetails(String email) async {
     Map<String, String> userDetails = {'firstName': '', 'lastName': ''};
 
@@ -70,94 +75,95 @@ class _HomePageState extends State<HomePage> {
     return userDetails;
   }
 
-
-  // navigate to profile page
-  void goToProfilePage() {
-    Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
-  }
-
-  void goToScoresPage() {
-    Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const ScoresPage()));
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        appBar: AppBar(
-          title: const Text('Orchestra App'),
-        ),
-        drawer: MyDrawer(
-          onProfileTap: goToProfilePage,
-          onSignOut: logout,
-          onScoresTap: goToScoresPage,
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              // the wall
-              Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection('messages').orderBy("TimeStamp", descending: false).snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
-                        return ListView.builder(
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            //get the message
-                            final message = snapshot.data!.docs[index];
-                            return messagePost(
-                              firstName: message['FirstName'],
-                              lastName: message['LastName'],
-                              message: message['Message'],
-                              user: message['UserEmail'],
-                              postId: message.id,
-                              likes: List<String>.from(message['Likes'] ?? []),
-                              date: formatDate(message['TimeStamp']),
-                              time: formatTime(message['TimeStamp'])
-                            );// Ensure MessagePost widget accepts these parameters
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('Error: ' + snapshot.error.toString()),
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  )
-              ),
-
-              // post message
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Row(
-                    children: [
-                      Expanded(
-                        child: MyTextField(
-                          controller: textController,
-                          hintText: 'Post a message',
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: postMessage,
-                        icon: const Icon(Icons.send),
-                      ),
-                    ]
-                ),
-              ),
-
-              // logged in as
-              Text('Logged in as: ' + (currentUser?.email ?? "Unknown"), style: const TextStyle(color: Colors.grey)),
-              SizedBox(height: 20),
-            ],
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          appBar: AppBar(
+            title: const Text('Orchestra App'),
+            bottom: const TabBar(
+              tabs: [
+                Tab(text: 'Home'),
+                Tab(text: 'Calendar'),
+              ],
+            ),
           ),
-        )
+          drawer: MyDrawer(
+            onProfileTap: authenticationMethods.goToProfilePage,
+            onSignOut: authenticationMethods.logout,
+            onScoresTap: authenticationMethods.goToScoresPage,
+          ),
+          body: TabBarView(
+            children: [
+              Center(
+              child: Column(
+                children: [
+                  // the wall
+                  Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance.collection('messages').orderBy("TimeStamp", descending: false).snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
+                            return ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                //get the message
+                                final message = snapshot.data!.docs[index];
+                                return messagePost(
+                                  firstName: message['FirstName'],
+                                  lastName: message['LastName'],
+                                  message: message['Message'],
+                                  user: message['UserEmail'],
+                                  postId: message.id,
+                                  likes: List<String>.from(message['Likes'] ?? []),
+                                  date: formatDate(message['TimeStamp']),
+                                  time: formatTime(message['TimeStamp'])
+                                );// Ensure MessagePost widget accepts these parameters
+                              },
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ' + snapshot.error.toString()),
+                            );
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      )
+                  ),
+
+                  // post message
+                  Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Row(
+                        children: [
+                          Expanded(
+                            child: MyTextField(
+                              controller: textController,
+                              hintText: 'Post a message',
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: postMessage,
+                            icon: const Icon(Icons.send),
+                          ),
+                        ]
+                    ),
+                  ),
+
+                  // logged in as
+                  Text('Logged in as: ' + (currentUser?.email ?? "Unknown"), style: const TextStyle(color: Colors.grey)),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+              const Center(child: Text('Calendar')),
+            ],
+          )
+      ),
     );
   }
 }

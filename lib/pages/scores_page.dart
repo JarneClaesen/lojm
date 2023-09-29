@@ -10,6 +10,7 @@ import 'package:orchestra_app/components/scores_list.dart';
 import 'package:orchestra_app/components/pdf_display.dart';
 
 import '../components/scores_list.dart';
+import '../helper/authentication_methods.dart';
 
 //todo: add a loading circle when downloading pdfs
 
@@ -27,6 +28,8 @@ class _ScoresPageState extends State<ScoresPage> {
   final PDFFetcher pdfFetcher;
   final PDFDownloader pdfDownloader;
 
+  late AuthenticationMethods authenticationMethods;
+
   _ScoresPageState()
       : pdfFetcher = PDFFetcher(FirebaseAuth.instance.currentUser),
         pdfDownloader = PDFDownloader();
@@ -34,6 +37,7 @@ class _ScoresPageState extends State<ScoresPage> {
   @override
   void initState() {
     super.initState();
+    authenticationMethods = AuthenticationMethods(context);
     _initPdfs();
   }
 
@@ -63,7 +67,7 @@ class _ScoresPageState extends State<ScoresPage> {
       ),
       drawer: MyDrawer(
         onProfileTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage())),
-        onSignOut: FirebaseAuth.instance.signOut,
+        onSignOut: authenticationMethods.logout,
         onScoresTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScoresPage())),
       ),
       body: isLandscape
