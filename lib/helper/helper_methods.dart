@@ -17,7 +17,7 @@ String formatTime(Timestamp timestamp) {
   DateTime dateTime = timestamp.toDate();
 
   String hour = dateTime.hour.toString();
-  String minute = dateTime.minute.toString();
+  String minute = dateTime.minute.toString().padLeft(2, '0');
 
   String formattedTime = "$hour:$minute";
   return formattedTime;
