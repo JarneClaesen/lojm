@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:orchestra_app/auth/auth.dart';
 import 'package:orchestra_app/auth/login_or_register.dart';
 import 'package:orchestra_app/firebase_options.dart';
@@ -44,6 +45,15 @@ class MyApp extends StatelessWidget {
       theme: Provider.of<ThemeProvider>(context).getTheme,
       title: 'Flutter Demo',
       home: const AuthPage(),
+      supportedLocales: const [
+        Locale('nl', 'BE'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+
+
     );
   }
 }

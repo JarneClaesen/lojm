@@ -9,6 +9,7 @@ import 'package:orchestra_app/pages/scores_page.dart';
 
 import '../helper/helper_methods.dart';
 import '../helper/authentication_methods.dart';
+import 'calendar_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -160,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-              const Center(child: Text('Calendar')),
+              CalendarPage(),
             ],
           )
       ),
