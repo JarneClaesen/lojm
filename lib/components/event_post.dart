@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../pages/event_details_page.dart';
 
 class EventPost extends StatelessWidget {
@@ -10,6 +10,7 @@ class EventPost extends StatelessWidget {
   final String location;
   final Map<String, dynamic> eventData;
   final Color? dotColor;
+  final bool isAdmin;
 
   const EventPost({
     Key? key,
@@ -20,6 +21,7 @@ class EventPost extends StatelessWidget {
     required this.location,
     required this.eventData,
     this.dotColor,
+    required this.isAdmin,
   }) : super(key: key);
 
   @override
@@ -30,65 +32,112 @@ class EventPost extends StatelessWidget {
           builder: (context) => EventDetailsPage(event: eventData),
         ));
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            margin: EdgeInsets.only(top: 25, left: 25, right: 25),
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (dotColor != null)
-                  CircleAvatar(
-                    backgroundColor: dotColor,
-                    radius: 5.0,
-                  ),
-                if (dotColor != null)
-                  const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                Row(
+                  children: [
+                    if (dotColor != null)
+                      CircleAvatar(
+                        backgroundColor: dotColor,
+                        radius: 5.0,
+                      ),
+                    if (dotColor != null)
+                      const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                    children: [
+                      Icon(Icons.date_range, color: Colors.grey[500]),
+                      const SizedBox(width: 5),
+                      Text(
+                          "${date.day}/${date.month}/${date.year}"
+                      ),
+                    ]
+                ),
+                const SizedBox(height: 10),
+                Row(
+                    children: [
+                      Icon(Icons.timer, color: Colors.grey[500]),
+                      const SizedBox(width: 5),
+                      Text("$startTime - $endTime"),
+                    ]
+                ),
+                const SizedBox(height: 10),
+                Row(
+                    children: [
+                      Icon(Icons.location_on, color: Colors.grey[500]),
+                      const SizedBox(width: 5),
+                      Text(location),
+                    ]
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.date_range, color: Colors.grey[500]),
-                const SizedBox(width: 5),
-                Text(
-                  "${date.day}/${date.month}/${date.year}"
-                ),
-              ]
+          ),
+          if (isAdmin)
+            Positioned(
+              top: 40,
+              right: 40,
+              child: GestureDetector(
+                onTap: () async {
+                  bool? shouldDelete = await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Delete Event'),
+                      content: Text('Are you sure you want to delete this event?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (shouldDelete == true && eventData['id'] != null) {
+                    print('Deleting event with ID: ${eventData['id']}');
+                    await FirebaseFirestore.instance
+                        .collection('events')
+                        .doc(eventData['id'])
+                        .delete()
+                        .then((value) => print("Event Deleted"))
+                        .catchError((error) => print("Failed to delete event: $error"));
+                  } else if (eventData['id'] == null) {
+                    print("Event ID is null. Cannot delete.");
+                  }
+                },
+                child: Icon(Icons.cancel),
+              ),
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.timer, color: Colors.grey[500]),
-                const SizedBox(width: 5),
-                Text("$startTime - $endTime"),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.location_on, color: Colors.grey[500]),
-                const SizedBox(width: 5),
-                Text(location),
-              ],
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

@@ -16,6 +16,7 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   String? userInstrument;
   final currentUser = FirebaseAuth.instance.currentUser;
+  bool? isAdmin;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _CalendarPageState extends State<CalendarPage> {
         var data = userDoc.data() as Map<String, dynamic>;
         setState(() {
           userInstrument = data['Instrument'];
+          isAdmin = data['IsAdmin'] ?? false;  // Get the IsAdmin value and default to false if it's not set
         });
       }
     }
@@ -72,12 +74,16 @@ class _CalendarPageState extends State<CalendarPage> {
                   startTime: formatTime(eventData['eventStartTime']),
                   endTime: formatTime(eventData['eventEndTime']),
                   location: eventData['location'],
-                  eventData: eventData,
+                  eventData: {
+                    ...eventData,
+                    'id': event.id  // add the document ID to the event data
+                  },
                   dotColor: (eventData['schedules'] as List?)?.isEmpty ?? true
                       ? null
                       : isUserInstrumentInSchedule
                       ? Colors.green
                       : Colors.red,
+                  isAdmin: isAdmin ?? false,
                 );
               },
             );
@@ -91,13 +97,13 @@ class _CalendarPageState extends State<CalendarPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: isAdmin == true ? FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.onSurface,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventFormPage()));
         },
         child: const Icon(Icons.add),
-      ),
+      ) : null,  // If the user is not an admin or isAdmin is not yet determined, don't show the button
     );
   }
 }
