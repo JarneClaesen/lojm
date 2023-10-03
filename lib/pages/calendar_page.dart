@@ -26,7 +26,7 @@ class _CalendarPageState extends State<CalendarPage> {
   _fetchUserInstrument() async {
     if (currentUser != null) {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection("Users").doc(currentUser!.email).get();
-      if(userDoc.exists && userDoc.data() != null) {
+      if (userDoc.exists && userDoc.data() != null) {
         var data = userDoc.data() as Map<String, dynamic>;
         setState(() {
           userInstrument = data['Instrument'];
@@ -42,28 +42,42 @@ class _CalendarPageState extends State<CalendarPage> {
         stream: FirebaseFirestore.instance.collection('events').orderBy("eventStartTime", descending: false).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
+            final now = Timestamp.now();
+            List<DocumentSnapshot> upcomingEvents = snapshot.data!.docs.where((event) => event.get("eventStartTime").compareTo(now) >= 0).toList();
+
             return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
+              itemCount: upcomingEvents.length,
               itemBuilder: (context, index) {
-                final event = snapshot.data!.docs[index];
+                final event = upcomingEvents[index];
                 var eventData = event.data() as Map<String, dynamic>;
                 bool isUserInstrumentInSchedule = false;
+                DateTime eventDate = (eventData['eventStartTime'] as Timestamp).toDate();
 
                 // Check if user's instrument is in the event schedule
                 for (var schedule in (eventData['schedules'] ?? [])) {
-                  if ((schedule['instruments'] as List).contains(userInstrument)) {
+                  // If it's a break, continue to the next iteration
+                  if (schedule['piece'] == null && schedule['conductor'] == null) {
+                    continue;
+                  }
+
+                  if ((schedule['instruments'] as List?)?.contains(userInstrument) == true) {
                     isUserInstrumentInSchedule = true;
                     break;
                   }
                 }
 
                 return EventPost(
+                  date: eventDate,
                   title: eventData['title'],
                   startTime: formatTime(eventData['eventStartTime']),
                   endTime: formatTime(eventData['eventEndTime']),
                   location: eventData['location'],
                   eventData: eventData,
-                  dotColor: isUserInstrumentInSchedule ? Colors.green : Colors.red, // Add dotColor attribute to EventPost constructor
+                  dotColor: (eventData['schedules'] as List?)?.isEmpty ?? true
+                      ? null
+                      : isUserInstrumentInSchedule
+                      ? Colors.green
+                      : Colors.red,
                 );
               },
             );
@@ -78,6 +92,7 @@ class _CalendarPageState extends State<CalendarPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.onSurface,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventFormPage()));
         },

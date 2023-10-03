@@ -50,55 +50,96 @@ class EventDetailsPage extends StatelessWidget {
                 Text('End Time: ${formatTime(event['eventEndTime'] as Timestamp)}', style: TextStyle(fontSize: 16)),
               ],
             ),
-            SizedBox(height: 20),
-            Divider(color: Colors.grey[400]),
-            SizedBox(height: 20),
-            Text('Schedule:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
             SizedBox(height: 10),
-            ...List<Widget>.from((event['schedules'] as List).map((schedule) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Text('Piece: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Expanded(child: Text('${schedule['piece']}', style: TextStyle(fontSize: 16))),
+            if ((event['description'] ?? '').isNotEmpty) ...[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.description, color: Colors.grey[500]),
+                  const SizedBox(width: 5),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Description:', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 5),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text('${event['description']}', style: TextStyle(fontSize: 16)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+
+
+            SizedBox(height: 20),
+            if ((event['schedules'] as List?)?.isNotEmpty ?? false) ...[
+              Divider(color: Colors.grey[400]),
+              SizedBox(height: 20),
+              Text('Schedule:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
+              SizedBox(height: 10),
+              ...List<Widget>.from(((event['schedules'] as List?) ?? []).map((schedule) {
+                var instrumentsList = (schedule['instruments'] as List?) ?? [];
+                bool isBreak = schedule['piece'] == null && schedule['conductor'] == null;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('${formatTime(schedule['startTime'] as Timestamp)}', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                      ),
+                      if (isBreak) ...[
+                        SizedBox(height: 10),
+                        Center(child: Text('BREAK', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
                       ],
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text('Conductor: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Expanded(child: Text('${schedule['conductor']}', style: TextStyle(fontSize: 16))),
+                      if (!isBreak) ...[
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text('Piece: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Expanded(child: Text('${schedule['piece']}', style: TextStyle(fontSize: 16))),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Text('Conductor: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Expanded(child: Text('${schedule['conductor']}', style: TextStyle(fontSize: 16))),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Instruments: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Expanded(child: Text('${instrumentsList.join(', ')}', style: TextStyle(fontSize: 16))),
+                          ],
+                        ),
+                        SizedBox(height: 10),
                       ],
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Icon(Icons.timer, color: Colors.grey[500]),
-                        const SizedBox(width: 5),
-                        Text('Start Time: ${formatTime(schedule['startTime'] as Timestamp)}', style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text('Instruments: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Expanded(child: Text('${(schedule['instruments'] as List).join(', ')}', style: TextStyle(fontSize: 16))),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              );
-            })),
+                    ],
+                  ),
+                );
+              })),
+            ],
           ],
         ),
       ),

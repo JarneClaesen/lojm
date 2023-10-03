@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../pages/event_details_page.dart';
 
 class EventPost extends StatelessWidget {
+  final DateTime date;
   final String title;
   final String startTime;
   final String endTime;
@@ -12,6 +13,7 @@ class EventPost extends StatelessWidget {
 
   const EventPost({
     Key? key,
+    required this.date,
     required this.title,
     required this.startTime,
     required this.endTime,
@@ -58,6 +60,16 @@ class EventPost extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(Icons.date_range, color: Colors.grey[500]),
+                const SizedBox(width: 5),
+                Text(
+                  "${date.day}/${date.month}/${date.year}"
+                ),
+              ]
             ),
             const SizedBox(height: 10),
             Row(
