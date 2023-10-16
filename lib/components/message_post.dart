@@ -72,52 +72,6 @@ class _messagePostState extends State<messagePost> {
     }
   }
 
-  // add a comment
-  void addComment(String commentText) {
-    FirebaseFirestore.instance.collection("messages").doc(widget.postId).collection("comments").add({
-      'CommentText': commentText,
-      'CommentedBy': currentUser?.email,
-      'CommentTime': Timestamp.now(),
-    });
-  }
-
-  // show a dialog box for adding comment
-  void showComentDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Add a comment"),
-        content: TextField(
-          controller: _commentTextController,
-          decoration: InputDecoration(
-            hintText: "Enter your comment",
-          ),
-        ),
-        actions: [
-
-          // cancel button
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _commentTextController.clear();
-            },
-            child: Text("Cancel"),
-          ),
-
-          // save button
-          TextButton(
-              onPressed: () {
-                addComment(_commentTextController.text);
-                Navigator.pop(context);
-                _commentTextController.clear();
-              },
-              child: Text("Post"),
-          ),
-        ]
-      ),
-    );
-  }
-
   // delete a post
   void deletePost() {
     // show dialog box for confirmation
@@ -161,133 +115,100 @@ class _messagePostState extends State<messagePost> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(8),
+    return Stack(
+      children: [
+        Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(8),
+        ),
+
+        margin: EdgeInsets.only(top: 25, left: 25, right: 25),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 20),
+
+            Row(
+              children: [
+                // user
+                Text(
+                  widget.firstName + ' ' + widget.lastName,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+
+            // wallpost
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // group of text (message + user email)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    //const SizedBox(height: 3),
+
+                    // DateTime
+                    Row(
+                      children: [
+                        Text(widget.date, style: TextStyle(color: Colors.grey[400])),
+                        Text(' at ', style: TextStyle(color: Colors.grey[400])),
+                        Text(widget.time, style: TextStyle(color: Colors.grey[400])),
+                      ],
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    // message
+                    Text(widget.message),
+
+                    const SizedBox(height: 5),
+
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+          ],
+        ),
       ),
-
-      margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 20),
-
-          Row(
+        // Positioned LikeButton on the top left
+        Positioned(
+          bottom: 5,
+          left: 31,
+          child: Row(
             children: [
-              // user
+              LikeButton(
+                isLiked: isLiked,
+                onTap: toggleLike,
+              ),
               Text(
-                widget.firstName + ' ' + widget.lastName,
+                widget.likes.length.toString(),
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[500],
                 ),
               ),
             ],
           ),
-
-          // wallpost
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // group of text (message + user email)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  //const SizedBox(height: 3),
-
-                  // DateTime
-                  Row(
-                    children: [
-                      Text(widget.date, style: TextStyle(color: Colors.grey[400])),
-                      Text(' at ', style: TextStyle(color: Colors.grey[400])),
-                      Text(widget.time, style: TextStyle(color: Colors.grey[400])),
-                    ],
-                  ),
-
-                  const SizedBox(height: 5),
-
-                  // message
-                  Text(widget.message),
-
-                  const SizedBox(height: 5),
-
-
-
-                  SizedBox(height: 10),
-
-
-                ],
-              ),
-
-              // delete button
-              if (widget.user == currentUser?.email)
-                DeleteButton(onTap: deletePost)
-            ],
-          ),
-
-          //buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-
-              // LIKE
-              Row(
-                children: [
-                  LikeButton(
-                    isLiked: isLiked,
-                    onTap: toggleLike,
-                  ),
-
-                  Text(
-                    widget.likes.length.toString(),
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(width: 10),
-
-            ],
-          ),
-
-          const SizedBox(height: 5),
-
-          // comments under the post
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("User Posts").doc(widget.postId).collection("Comments").orderBy("CommentTime", descending: true).snapshots(),
-            builder: (context, snapshot) {
-              // show loading circle if no data yet
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return ListView(
-                shrinkWrap: true, // for nested lists
-                physics: const NeverScrollableScrollPhysics(),
-                children: snapshot.data!.docs.map((doc) {
-                  // get the comment
-                  final commentData = doc.data() as Map<String, dynamic>;
-
-                  // return a comment
-                  return Comment(
-                    text: commentData['CommentText'],
-                    user: commentData['CommentedBy'],
-                    time: formatDate(commentData['CommentTime']),
-                  );
-                }).toList(),
-              );
-            }
+        ),
+        // Positioned DeleteButton on the top right
+        if (widget.user == currentUser?.email)
+          Positioned(
+            top: 40,
+            right: 40,
+            child: DeleteButton(onTap: deletePost),
           )
-        ],
-      ),
+            ],
     );
   }
 }
