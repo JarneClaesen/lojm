@@ -1,0 +1,1 @@
+enum OperationStatusCode { success, error, undefined }
