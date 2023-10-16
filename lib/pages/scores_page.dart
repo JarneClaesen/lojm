@@ -28,6 +28,7 @@ class _ScoresPageState extends State<ScoresPage> {
   final PDFFetcher pdfFetcher;
   final PDFDownloader pdfDownloader;
   bool _loading = true;
+  bool _downloading = false;
 
   late AuthenticationMethods authenticationMethods;
 
@@ -56,9 +57,19 @@ class _ScoresPageState extends State<ScoresPage> {
 
 
   Future<String> _downloadPdf(String pdfName) async {
+    setState(() {
+      _downloading = true; // Set downloading to true when starting the download
+    });
+
     final userDocument = await FirebaseFirestore.instance.collection("Users").doc(currentUser?.email).get();
     final instrument = userDocument.data()?['Instrument'];
-    return await pdfDownloader.downloadFile(pdfName, instrument!);
+    String path = await pdfDownloader.downloadFile(pdfName, instrument!);
+
+    setState(() {
+      _downloading = false; // Set downloading to false when download is finished
+    });
+
+    return path;
   }
 
   void _onPdfSelected(String path) {
@@ -81,17 +92,35 @@ class _ScoresPageState extends State<ScoresPage> {
         onScoresTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScoresPage())),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())  // Display loading circle
-          : pdfs.isEmpty
-          ? const Center(child: Text("No scores"))  // Display 'No scores' text
-          : isLandscape
-          ? Row(
-        children: [
-          Expanded(child: ScoresList(pdfs: pdfs, onPdfSelected: _onPdfSelected, onDownload: _downloadPdf)),
-          if (selectedPdf != null) Expanded(child: PDFDisplay(path: selectedPdf!, key: ValueKey(selectedPdf))),
+          ? const Center(child: CircularProgressIndicator()) // Display loading circle when loading PDF list
+          : Stack( // Using Stack widget
+        children: <Widget>[
+          pdfs.isEmpty
+              ? const Center(child: Text("No scores")) // Display 'No scores' text
+              : isLandscape
+              ? Row(
+            children: [
+              Expanded(child: ScoresList(pdfs: pdfs, onPdfSelected: _onPdfSelected, onDownload: _downloadPdf)),
+              if (selectedPdf != null) Expanded(child: PDFDisplay(path: selectedPdf!, key: ValueKey(selectedPdf))),
+            ],
+          )
+              : ScoresList(pdfs: pdfs, onPdfSelected: _onPdfSelected, onDownload: _downloadPdf),
+          if (_downloading) // Overlay when downloading
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                color: Colors.black12, // semi-transparent black for dark overlay
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
         ],
-      )
-          : ScoresList(pdfs: pdfs, onPdfSelected: _onPdfSelected, onDownload: _downloadPdf),
+      ),
     );
   }
+
 }
