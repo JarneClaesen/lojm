@@ -71,7 +71,3 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
     );
   }
 }
-
-
-
-// If your app download files like pdf in storage then in 13 no permission is required for your application directory ask for getApplicationDocumentDirectory using path_provider and save your file in app directory then create download page in your app and using builder list all files available in given storage and give button to open file (you can use open_file):
