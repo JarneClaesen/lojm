@@ -171,13 +171,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
 
-                // username
-                MyTextBox(
-                  text: userData['Username'] ?? '',
-                  sectionName: 'Username',
-                  onPressed: () => editField('Username'),
-                ),
-
                 // first name
                 MyTextBox(
                   text: userData['FirstName'] ?? '',
@@ -198,22 +191,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   sectionName: 'Instrument',
                   onPressed: () => editInstrument(),  // Note the change to editInstrument here
                 ),
-
-                // bio
-                MyTextBox(
-                  text: userData['Bio'] ?? 'Empty bio',
-                  sectionName: 'Bio',
-                  onPressed: () => editField('Bio'),
-                ),
-
-                const SizedBox(height: 50.0),
-
-                // user posts
-                MyTextBox(
-                  text: userData['messages'] ?? 'No messages',
-                  sectionName: 'posts',
-                  onPressed: () => editField('messages'),
-                )
               ],
             );
           } else if (snapshot.hasError) {
