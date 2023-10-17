@@ -41,8 +41,6 @@ class _messagePostState extends State<messagePost> {
   final currentUser = FirebaseAuth.instance.currentUser;
   bool isLiked = false;
 
-  // comment text controller
-  final _commentTextController = TextEditingController();
 
   @override
   void initState() {
@@ -117,98 +115,85 @@ class _messagePostState extends State<messagePost> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(8),
-        ),
-
-        margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(width: 20),
-
-            Row(
-              children: [
-                // user
-                Text(
-                  widget.firstName + ' ' + widget.lastName,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-
-            // wallpost
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // group of text (message + user email)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    //const SizedBox(height: 3),
-
-                    // DateTime
-                    Row(
-                      children: [
-                        Text(widget.date, style: TextStyle(color: Colors.grey[400])),
-                        Text(' at ', style: TextStyle(color: Colors.grey[400])),
-                        Text(widget.time, style: TextStyle(color: Colors.grey[400])),
-                      ],
-                    ),
-
-                    const SizedBox(height: 5),
-
-                    // message
-                    Text(widget.message),
-
-                    const SizedBox(height: 5),
-
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-          ],
-        ),
-      ),
-        // Positioned LikeButton on the top left
-        Positioned(
-          bottom: 5,
-          left: 31,
-          child: Row(
-            children: [
-              LikeButton(
-                isLiked: isLiked,
-                onTap: toggleLike,
-              ),
-              Text(
-                widget.likes.length.toString(),
-                style: TextStyle(
-                  color: Colors.grey[500],
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Positioned DeleteButton on the top right
-        if (widget.user == currentUser?.email)
-          Positioned(
-            top: 40,
-            right: 40,
-            child: DeleteButton(onTap: deletePost),
-          )
-            ],
+        _buildMainContainer(context),
+        _buildLikeButton(),
+        if (widget.user == currentUser?.email) _buildDeleteButton(),
+      ],
     );
   }
+
+  Widget _buildMainContainer(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      margin: EdgeInsets.only(top: 25, left: 25, right: 25),
+      padding: EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildUserName(),
+          _buildWallPost(),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserName() {
+    return Text(
+      '${widget.firstName} ${widget.lastName}',
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _buildWallPost() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(widget.date, style: TextStyle(color: Colors.grey[400])),
+            Text(' at ', style: TextStyle(color: Colors.grey[400])),
+            Text(widget.time, style: TextStyle(color: Colors.grey[400])),
+          ],
+        ),
+        const SizedBox(height: 5),
+        Text(widget.message),
+      ],
+    );
+  }
+
+  Widget _buildLikeButton() {
+    return Positioned(
+      bottom: -7,  // Increase this value if you want more space
+      left: 31,
+      child: Row(
+        children: [
+          LikeButton(
+            isLiked: isLiked,
+            onTap: toggleLike,
+          ), // This will give horizontal spacing between the button and the text
+          Text(
+            widget.likes.length.toString(),
+            style: TextStyle(color: Colors.grey[500]),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildDeleteButton() {
+    return Positioned(
+      top: 40,
+      right: 40,
+      child: DeleteButton(onTap: deletePost),
+    );
+  }
+
 }
