@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../components/button.dart';
 import '../components/dropdown.dart';
@@ -68,6 +69,11 @@ class _RegisterPageState extends State<RegisterPage> {
         'Bio': 'Empty bio',
         'ProfilePicture': '',
         'IsAdmin': false,
+      });
+
+      // make new collection to store subscriptions_id's
+      FirebaseFirestore.instance.collection("Subscriptions").doc(userCredential.user!.email).set({
+        'subscription_id': OneSignal.User.pushSubscription.id,
       });
 
       if (context.mounted) {
