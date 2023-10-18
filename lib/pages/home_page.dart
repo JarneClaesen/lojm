@@ -18,6 +18,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../helper/notification_methods.dart';
 
+// todo: make it so user dont get notifications when the app is open
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
