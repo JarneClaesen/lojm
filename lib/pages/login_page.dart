@@ -49,6 +49,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final logoAsset = isDarkMode
+        ? 'assets/images/lojmLogoRemovebgWhite.png'
+        : 'assets/images/lojmLogoRemovebg.png';
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
@@ -58,10 +62,14 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
 
                 //logo
-                const Icon(Icons.lock, size: 100),
+                Image.asset(
+                    logoAsset,
+                    fit: BoxFit.contain,
+                    height: 200,
+                    width: 200
+                ),
 
                 const SizedBox(height: 50),
 

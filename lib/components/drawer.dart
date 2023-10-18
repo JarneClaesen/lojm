@@ -53,11 +53,11 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
             Column(children: [
               // header
               DrawerHeader(
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 64,
-                  )),
+                child: Image.asset(
+                  'assets/images/lojmLogoRemovebgWhite.png',
+                  fit: BoxFit.fill
+                ),
+              ),
               MyListTile(
                 icon: Icons.home,
                 text: 'H O M E',

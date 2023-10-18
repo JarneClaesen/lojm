@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
-            title: const Text('Orchestra App'),
+            title: const Text('Lojm'),
             bottom: const TabBar(
               tabs: [
                 Tab(text: 'Home'),
@@ -118,10 +118,11 @@ class _HomePageState extends State<HomePage> {
                   // the wall
                   Expanded(
                       child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance.collection('messages').orderBy("TimeStamp", descending: false).snapshots(),
+                        stream: FirebaseFirestore.instance.collection('messages').orderBy("TimeStamp", descending: true).snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
                             return ListView.builder(
+                              reverse: true,
                               itemCount: snapshot.data!.docs.length,
                               itemBuilder: (context, index) {
                                 //get the message

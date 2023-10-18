@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProvider>(context).getTheme,
-      title: 'Flutter Demo',
+      title: 'Lojm',
       home: const AuthPage(),
       supportedLocales: const [
         Locale('nl', 'BE'),
