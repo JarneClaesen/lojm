@@ -100,7 +100,11 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
             title: const Text('Lojm'),
-            bottom: const TabBar(
+            bottom: TabBar(
+              labelColor: Theme.of(context).colorScheme.onSurface,
+              unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
+              indicatorColor: Theme.of(context).colorScheme.onSurface,
+              dividerColor: Theme.of(context).colorScheme.tertiary,
               tabs: [
                 Tab(text: 'Home'),
                 Tab(text: 'Calendar'),
