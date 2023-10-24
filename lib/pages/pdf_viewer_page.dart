@@ -52,18 +52,21 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
       appBar: AppBar(
         title: Text("PDF Viewer"),
         actions: [
-          IconButton(
-            icon: Icon(Icons.download_rounded),
-            onPressed: () async {
-              OperationStatusCode status = await createLocalBackupFile(widget.path);
-              if (status == OperationStatusCode.success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('PDF successfully downloaded!')));
-              } else if (status == OperationStatusCode.error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error downloading PDF.')));
-              }
-            },
+          Padding(
+            padding: EdgeInsets.only(right: 20.0), // Add desired right padding
+            child: IconButton(
+              icon: Icon(Icons.download_rounded),
+              onPressed: () async {
+                OperationStatusCode status = await createLocalBackupFile(widget.path);
+                if (status == OperationStatusCode.success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('PDF successfully downloaded!')));
+                } else if (status == OperationStatusCode.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error downloading PDF.')));
+                }
+              },
+            ),
           ),
         ],
       ),

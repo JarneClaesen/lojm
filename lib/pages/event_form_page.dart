@@ -84,7 +84,7 @@ class _EventFormPageState extends State<EventFormPage> {
             padding: const EdgeInsets.only(right: 20.0),
             child: TextButton(
               onPressed: _submitForm,
-              child: Text('SAVE', style: TextStyle(color: Colors.white)),
+              child: Text('SAVE', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.onSurface,
               )

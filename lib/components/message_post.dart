@@ -128,8 +128,8 @@ class _messagePostState extends State<messagePost> {
         color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
       ),
-      margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 0),
+      padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -170,7 +170,7 @@ class _messagePostState extends State<messagePost> {
 
   Widget _buildLikeButton() {
     return Positioned(
-      bottom: -7,  // Increase this value if you want more space
+      bottom: 0,  // Increase this value if you want more space
       left: 31,
       child: Row(
         children: [
