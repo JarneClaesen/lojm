@@ -25,4 +25,9 @@ ThemeData lightTheme = ThemeData(
       foregroundColor: Colors.black,
     ),
   ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: Colors.grey[700], // Color of the cursor
+    selectionColor: Colors.grey[700], // Background color of the selected text
+    selectionHandleColor: Colors.grey[700], // Color of the selection handles
+  ),
 );
