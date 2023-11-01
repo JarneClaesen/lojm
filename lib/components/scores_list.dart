@@ -14,11 +14,10 @@ class ScoresList extends StatelessWidget {
       itemCount: pdfs.length,
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 25.0), // increased horizontal padding
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 25.0),
           child: InkWell(
             onTap: () async {
               final localPath = await onDownload(pdfs[index]);
-
               final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
               if (isLandscape) {
@@ -33,19 +32,23 @@ class ScoresList extends StatelessWidget {
                 );
               }
             },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16), // increased padding for the container
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.picture_as_pdf, color: Colors.red, size: 28), // you can adjust the icon size if needed
-                  SizedBox(width: 20), // increased spacing after the icon
-                  Expanded(child: Text(pdfs[index], style: TextStyle(fontSize: 16))), // increased font size for the text
-                ],
-              ),
+            child: Builder(
+              builder: (BuildContext innerContext) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(innerContext).colorScheme.primary,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.picture_as_pdf, color: Colors.red, size: 28),
+                      SizedBox(width: 20),
+                      Expanded(child: Text(pdfs[index], style: TextStyle(fontSize: 16))),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         );
