@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helper/style_constants.dart';
+
 class MyDropdown extends StatefulWidget {
   final List<String> items;
   final String? selectedItem;
@@ -32,11 +34,11 @@ class _MyDropdownState extends State<MyDropdown> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
         border: Border.all(color: Theme.of(context).colorScheme.secondary),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: StyleConstants.largeRoundedCorner,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: StyleConstants.largeRoundedCorner,
           value: _currentItem,
           items: widget.items.map((String item) {
             return DropdownMenuItem<String>(
@@ -45,7 +47,7 @@ class _MyDropdownState extends State<MyDropdown> {
                 margin: const EdgeInsets.symmetric(vertical: 4.0),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: StyleConstants.largeRoundedCorner,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 child: Text(item, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helper/style_constants.dart';
+
 class MyButton extends StatelessWidget {
   final Function()? onTap;
   final String text;
@@ -19,7 +21,7 @@ class MyButton extends StatelessWidget {
         //width: double.infinity,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.onSurface, // todo kleur van de button aanpassen zodat het in light mode zwart is en iets anders in dark mode
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: StyleConstants.largeRoundedCorner,
         ),
         child: Center(
           child: Text(

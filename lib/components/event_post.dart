@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../helper/style_constants.dart';
 import '../pages/event_details_page.dart';
 
 class EventPost extends StatelessWidget {
@@ -37,7 +38,7 @@ class EventPost extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: StyleConstants.largeRoundedCorner,
             ),
             margin: EdgeInsets.only(top: 25, left: 25, right: 25),
             padding: EdgeInsets.all(20),

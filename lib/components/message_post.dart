@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:orchestra_app/components/comment_button.dart';
 
 import '../helper/helper_methods.dart';
+import '../helper/style_constants.dart';
 import 'comment.dart';
 import 'delete_button.dart';
 import 'like_button.dart';
@@ -126,7 +127,7 @@ class _messagePostState extends State<messagePost> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: StyleConstants.largeRoundedCorner,
       ),
       margin: EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 0),
       padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 30),

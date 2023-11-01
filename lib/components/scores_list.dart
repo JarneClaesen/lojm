@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orchestra_app/helper/style_constants.dart';
 import 'package:orchestra_app/pages/pdf_viewer_page.dart';
 
 class ScoresList extends StatelessWidget {
@@ -37,7 +38,7 @@ class ScoresList extends StatelessWidget {
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: StyleConstants.largeRoundedCorner,
                     color: Theme.of(innerContext).colorScheme.primary,
                   ),
                   child: Row(

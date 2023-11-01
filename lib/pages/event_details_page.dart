@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../helper/helper_methods.dart';
+import '../helper/style_constants.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final Map<String, dynamic> event;
@@ -64,10 +65,10 @@ class EventDetailsPage extends StatelessWidget {
                       SizedBox(height: 5),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.8,
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: StyleConstants.largeRoundedCorner,
                         ),
                         child: Text('${event['description']}', style: TextStyle(fontSize: 16)),
                       ),
@@ -91,7 +92,7 @@ class EventDetailsPage extends StatelessWidget {
                 return Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: StyleConstants.largeRoundedCorner,
                   ),
                   margin: const EdgeInsets.only(bottom: 10),
                   padding: const EdgeInsets.all(15),

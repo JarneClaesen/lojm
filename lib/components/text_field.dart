@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helper/style_constants.dart';
+
 class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -21,11 +23,11 @@ class MyTextField extends StatelessWidget {
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: StyleConstants.largeRoundedCorner,
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: StyleConstants.largeRoundedCorner,
         ),
         fillColor: Theme.of(context).colorScheme.primary,
         filled: true,

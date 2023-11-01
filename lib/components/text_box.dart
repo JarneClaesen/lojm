@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helper/style_constants.dart';
+
 class MyTextBox extends StatelessWidget {
   final String text;
   final String sectionName;
@@ -17,7 +19,7 @@ class MyTextBox extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(8)
+          borderRadius: StyleConstants.largeRoundedCorner
           ),
       padding: const EdgeInsets.only(left: 15, bottom: 15),
       margin: const EdgeInsets.only(left: 20, right: 20, top: 20),

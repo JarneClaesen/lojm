@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helper/style_constants.dart';
+
 class SmallCustomButton extends StatelessWidget {
   final Function()? onTap;
   final String text;
@@ -26,7 +28,7 @@ class SmallCustomButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.onSurface,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: StyleConstants.largeRoundedCorner,
         ),
         child: Center(
           child: Row(
