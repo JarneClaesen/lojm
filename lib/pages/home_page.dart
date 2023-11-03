@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../helper/notification_methods.dart';
 
-// todo: make it so user dont get notifications when the app is open
+// todo: make it so user doesn't get notifications when the app is open
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -35,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   final currentUser = FirebaseAuth.instance.currentUser;
 
   late AuthenticationMethods authenticationMethods;
+  bool isAdmin = false;
 
   void postMessage() async {
     // only post if there is something in the textfield
@@ -64,16 +63,15 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    setState(() {
       // refresh the page
       textController.clear();
-    });
   }
 
   @override
   void initState() {
     super.initState();
     authenticationMethods = AuthenticationMethods(context);
+    fetchAdminStatus();
   }
 
   Future<Map<String, String>> fetchUserDetails(String email) async {
@@ -90,6 +88,18 @@ class _HomePageState extends State<HomePage> {
     }
 
     return userDetails;
+  }
+
+  void fetchAdminStatus() async {
+    if (currentUser != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection("Users").doc(currentUser!.email).get();
+      if (userDoc.exists && userDoc.data() != null) {
+        var data = userDoc.data() as Map<String, dynamic>;
+        setState(() {
+          isAdmin = data['IsAdmin'] ?? false;
+        });
+      }
+    }
   }
 
   @override
@@ -158,34 +168,39 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   // post message
-                  Padding(
-                    padding: const EdgeInsets.all(25.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,  // Make sure children align to the end (bottom)
-                      children: [
-                        Expanded(
-                          child: ConstrainedBox(  // Constrain the height
-                            constraints: BoxConstraints(
-                              maxHeight: 150,  // This can be adjusted to your preference
-                            ),
-                            child: SingleChildScrollView(  // Make sure the TextField is scrollable when content overflows
-                              child: MyMessageTextField(
-                                controller: textController,
-                                hintText: 'Post a message',
+                  isAdmin
+                    ? Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          // Make sure children align to the end (bottom)
+                          children: [
+                            Expanded(
+                              child: ConstrainedBox( // Constrain the height
+                                constraints: BoxConstraints(
+                                  maxHeight: 150, // This can be adjusted to your preference
+                                ),
+                                child: SingleChildScrollView( // Make sure the TextField is scrollable when content overflows
+                                  child: MyMessageTextField(
+                                    controller: textController,
+                                    hintText: 'Post a message',
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              // Adjust the bottom padding as needed
+                              child: IconButton(
+                                onPressed: postMessage,
+                                icon: const Icon(Icons.send),
+                              ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),  // Adjust the bottom padding as needed
-                          child: IconButton(
-                            onPressed: postMessage,
-                            icon: const Icon(Icons.send),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      )
+                  : const SizedBox.shrink(),
+
 
                   // logged in as
                   Text('Logged in as: ' + (currentUser?.email ?? "Unknown"), style: const TextStyle(color: Colors.grey)),

@@ -16,12 +16,20 @@ class _LoginPageState extends State<LoginPage> {
   // text editing controller
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
+  bool _isLoading = false;
 
   // sign user in
   void signIn() async {
-    //show loading circle
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true; // Start loading
+    });
+
+    // Show loading circle
     showDialog(
       context: context,
+      barrierDismissible: false, // Prevents dismissing the dialog by tapping outside of it
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
@@ -30,14 +38,21 @@ class _LoginPageState extends State<LoginPage> {
           email: emailTextController.text,
           password: passwordTextController.text
       );
+      // If the sign-in was successful
       if (context.mounted) {
-        Navigator.pop(context);
+        Navigator.pop(context); // Dismiss the loading dialog
       }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
       }
       displayMessage(e.code);
+    } finally {
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false; // Stop loading on both success and failure
+        });
+      }
     }
   }
 

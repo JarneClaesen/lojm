@@ -21,12 +21,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final comfirmPasswordTextController = TextEditingController();
   final firstNameTextController = TextEditingController();
   final lastNameTextController = TextEditingController();
+  bool _isLoading = false;
 
   List<String> instruments = ['Violin', 'Viola', 'Cello', 'Double Bass', 'Flute', 'Oboe', 'Clarinet', 'Bassoon', 'Trumpet', 'Trombone', 'Horn', 'Tuba', 'Percussion', 'Piano', 'Harp'];
   String? selectedInstrument;
 
   // sign user up
   void signUp() async {
+    if (_isLoading) return;
 
     if (firstNameTextController.text.isEmpty ||
         lastNameTextController.text.isEmpty ||
@@ -47,9 +49,14 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    //show loading circle
+    setState(() {
+      _isLoading = true; // Start loading
+    });
+
+    // Show loading circle
     showDialog(
       context: context,
+      barrierDismissible: false, // User cannot dismiss it manually
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
@@ -76,11 +83,19 @@ class _RegisterPageState extends State<RegisterPage> {
         'subscription_id': OneSignal.User.pushSubscription.id,
       });
 
+      // Dismiss the loading circle
       if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
+      // Dismiss the loading circle if there is an error
       if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.pop(context);
       }
       displayMessage(e.code);
