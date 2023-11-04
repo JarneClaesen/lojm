@@ -24,6 +24,12 @@ class _EventFormPageState extends State<EventFormPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _locationController.dispose();
@@ -84,7 +90,7 @@ class _EventFormPageState extends State<EventFormPage> {
             padding: const EdgeInsets.only(right: 20.0),
             child: TextButton(
               onPressed: _submitForm,
-              child: Text('SAVE', style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+              child: Text('SAVE', style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer)),
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.onSurface,
               )
@@ -99,7 +105,7 @@ class _EventFormPageState extends State<EventFormPage> {
             MyTextField(controller: _titleController, hintText: 'Event Title', obscureText: false),
             SizedBox(height: 20),
             ListTile(
-              title: Text(_selectedDate == null ? 'Select date' : 'Date: ${DateFormat("dd-MM-yyyy").format(_selectedDate!)}'),
+              title: Text(_selectedDate == null ? 'Select date' : '${DateFormat("dd-MM-yyyy").format(_selectedDate!)}'),
               leading: Icon(Icons.calendar_today),
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
@@ -117,7 +123,7 @@ class _EventFormPageState extends State<EventFormPage> {
             ),
             ListTile(
               leading: Icon(Icons.timer),
-              title: Text(_eventStartTime == null ? 'Start time' : 'Event Start: ${_eventStartTime!.hour}:${_eventStartTime!.minute.toString().padLeft(2, '0')}'),
+              title: Text(_eventStartTime == null ? 'Start time' : '${_eventStartTime!.hour}:${_eventStartTime!.minute.toString().padLeft(2, '0')}'),
               onTap: () async {
                 TimeOfDay? pickedTime = await showTimePicker(
                   context: context,
@@ -138,7 +144,7 @@ class _EventFormPageState extends State<EventFormPage> {
             ),
             ListTile(
               leading: Icon(Icons.timer_off),
-              title: Text(_eventEndTime == null ? 'End time' : 'Event End: ${_eventEndTime!.hour}:${_eventEndTime!.minute.toString().padLeft(2, '0')}'),
+              title: Text(_eventEndTime == null ? 'End time' : '${_eventEndTime!.hour}:${_eventEndTime!.minute.toString().padLeft(2, '0')}'),
               onTap: () async {
                 TimeOfDay? pickedTime = await showTimePicker(
                   context: context,
@@ -215,7 +221,7 @@ class _EventFormPageState extends State<EventFormPage> {
             ),
             ListTile( // Adding start time for break
               leading: Icon(Icons.timer),
-              title: Text(item.startTime == null ? 'Select start time' : 'Start: ${item.startTime!.hour}:${item.startTime!.minute.toString().padLeft(2, '0')}'),
+              title: Text(item.startTime == null ? 'Select start time' : '${item.startTime!.hour}:${item.startTime!.minute.toString().padLeft(2, '0')}'),
               onTap: () async {
                 TimeOfDay? pickedTime = await showTimePicker(
                   context: context,
@@ -264,7 +270,7 @@ class _EventFormPageState extends State<EventFormPage> {
                   const SizedBox(height: 20),
                   ListTile(
                     leading: Icon(Icons.timer),
-                    title: Text(item.startTime == null ? 'Select start time' : 'Start: ${item.startTime!.hour}:${item.startTime!.minute.toString().padLeft(2, '0')}'),
+                    title: Text(item.startTime == null ? 'Select start time' : '${item.startTime!.hour}:${item.startTime!.minute.toString().padLeft(2, '0')}'),
                     onTap: () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         context: context,

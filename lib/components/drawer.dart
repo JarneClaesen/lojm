@@ -44,7 +44,7 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.primary, // Custom background color
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer, // Custom background color
           title: Text(
             'Log Out',
             style: TextStyle(
@@ -99,6 +99,11 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
             Column(children: [
               // header
               DrawerHeader(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: Divider.createBorderSide(context, color: Colors.white),
+                  )
+                ),
                 child: Image.asset(
                   'assets/images/lojmLogoRemovebgWhite.png',
                   fit: BoxFit.fill
@@ -166,7 +171,7 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
         );
 
         return Drawer(
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Color.fromRGBO(20, 20, 20, 1.0),
           child: isLandscape ? SingleChildScrollView(child: drawerContent) : drawerContent,
         );
       },

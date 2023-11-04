@@ -37,7 +37,7 @@ class MyMessageTextField extends StatelessWidget {
               borderSide: BorderSide(color: Colors.white),
               borderRadius: StyleConstants.largeRoundedCorner,
             ),
-            fillColor: Theme.of(context).colorScheme.primary,
+            fillColor: Theme.of(context).colorScheme.primaryContainer,
             filled: true,
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.grey[500]),

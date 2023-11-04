@@ -34,12 +34,12 @@ class SmallCustomButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) Icon(icon, color: Theme.of(context).colorScheme.primary),
+              if (icon != null) Icon(icon, color: Theme.of(context).colorScheme.primaryContainer),
               const SizedBox(width: 5),
               Text(
                 text,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

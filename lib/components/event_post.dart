@@ -37,7 +37,7 @@ class EventPost extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: StyleConstants.largeRoundedCorner,
             ),
             margin: EdgeInsets.only(top: 25, left: 25, right: 25),
@@ -104,7 +104,7 @@ class EventPost extends StatelessWidget {
                   bool? shouldDelete = await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      backgroundColor: Theme.of(context).colorScheme.primary, // Set the background color of the dialog
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer, // Set the background color of the dialog
                       title: Text(
                         'Delete Event',
                         style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Set the text color for the title
@@ -148,7 +148,7 @@ class EventPost extends StatelessWidget {
                     print("Event ID is null. Cannot delete.");
                   }
                 },
-                child: Icon(Icons.cancel),
+                child: Icon(Icons.cancel, color: Colors.grey),
               ),
             ),
         ],

@@ -126,7 +126,7 @@ class _messagePostState extends State<messagePost> {
   Widget _buildMainContainer(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: StyleConstants.largeRoundedCorner,
       ),
       margin: EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 0),

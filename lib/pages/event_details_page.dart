@@ -67,7 +67,7 @@ class EventDetailsPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.8,
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.primaryContainer,
                           borderRadius: StyleConstants.largeRoundedCorner,
                         ),
                         child: Text('${event['description']}', style: TextStyle(fontSize: 16)),
@@ -91,7 +91,7 @@ class EventDetailsPage extends StatelessWidget {
 
                 return Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: StyleConstants.largeRoundedCorner,
                   ),
                   margin: const EdgeInsets.only(bottom: 10),

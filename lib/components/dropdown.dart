@@ -32,7 +32,7 @@ class _MyDropdownState extends State<MyDropdown> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.primaryContainer,
         border: Border.all(color: Theme.of(context).colorScheme.secondary),
         borderRadius: StyleConstants.largeRoundedCorner,
       ),
@@ -48,7 +48,7 @@ class _MyDropdownState extends State<MyDropdown> {
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   borderRadius: StyleConstants.largeRoundedCorner,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                 ),
                 child: Text(item, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
               ),
@@ -60,7 +60,7 @@ class _MyDropdownState extends State<MyDropdown> {
             });
             widget.onChanged(newValue); // notify the parent about the change
           },
-          dropdownColor: Theme.of(context).colorScheme.primary,
+          dropdownColor: Theme.of(context).colorScheme.primaryContainer,
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           hint: Text(
             "Select your instrument",
