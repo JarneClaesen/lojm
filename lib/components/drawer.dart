@@ -39,6 +39,52 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  void _showLogoutConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.primary, // Custom background color
+          title: Text(
+            'Log Out',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface, // Custom text color for title
+            ),
+          ),
+          content: Text(
+            'Do you want to log out?',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface, // Custom text color for content
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Custom text color for button
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Log Out',
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Custom text color for button
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog before logging out
+                if(widget.onSignOut != null) {
+                  widget.onSignOut!(); // Call the logout callback if it's provided
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
@@ -112,7 +158,7 @@ class _MyDrawerState extends State<MyDrawer> with SingleTickerProviderStateMixin
                 child: MyListTile(
                   icon: Icons.logout,
                   text: 'L O G O U T',
-                  onTap: widget.onSignOut,
+                  onTap: _showLogoutConfirmationDialog,
                 ),
               ),
             ]),

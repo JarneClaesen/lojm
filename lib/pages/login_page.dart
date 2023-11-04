@@ -26,6 +26,8 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true; // Start loading
     });
 
+    bool isDialogShowing = true;
+
     // Show loading circle
     showDialog(
       context: context,
@@ -38,13 +40,15 @@ class _LoginPageState extends State<LoginPage> {
           email: emailTextController.text,
           password: passwordTextController.text
       );
-      // If the sign-in was successful
-      if (context.mounted) {
+      // If the sign-in was successful && Only pop the dialog if we're still showing it
+      if (isDialogShowing && context.mounted) {
         Navigator.pop(context); // Dismiss the loading dialog
+        isDialogShowing = false;
       }
     } on FirebaseAuthException catch (e) {
-      if (context.mounted) {
-        Navigator.pop(context);
+      if (isDialogShowing && context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        isDialogShowing = false;
       }
       displayMessage(e.code);
     } finally {
@@ -53,6 +57,24 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false; // Stop loading on both success and failure
         });
       }
+      // Ensure we clean up the dialog if it's still showing after all actions are complete
+      if (isDialogShowing) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    }
+  }
+
+  void sendPasswordResetEmail() async {
+    if (emailTextController.text.isEmpty) {
+      displayMessage("Please enter your email address to reset your password.");
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailTextController.text);
+      displayMessage("Password reset link has been sent to your email address.");
+    } on FirebaseAuthException catch (e) {
+      displayMessage("Failed to send password reset email: ${e.message}");
     }
   }
 
@@ -108,7 +130,18 @@ class _LoginPageState extends State<LoginPage> {
                 // password textfield
                 MyTextField(controller: passwordTextController, hintText: 'Password', obscureText: true),
 
-                const SizedBox(height: 25),
+                // forgot password
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextButton(
+                      onPressed: sendPasswordResetEmail,
+                      child: const Text('Forgot Password?'),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
 
                 //signin button
                 MyButton(onTap: signIn, text: 'Sign in'),
@@ -128,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: widget.onTap,
                       child: const Text('Register'),
                     ),],
-                )
+                ),
               ],
             ),
           ),

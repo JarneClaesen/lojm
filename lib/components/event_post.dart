@@ -104,20 +104,33 @@ class EventPost extends StatelessWidget {
                   bool? shouldDelete = await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text('Delete Event'),
-                      content: Text('Are you sure you want to delete this event?'),
+                      backgroundColor: Theme.of(context).colorScheme.primary, // Set the background color of the dialog
+                      title: Text(
+                        'Delete Event',
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Set the text color for the title
+                      ),
+                      content: Text(
+                        'Are you sure you want to delete this event?',
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Set the text color for the content
+                      ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(false);
                           },
-                          child: Text('Cancel'),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Set the text color for the cancel button
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(true);
                           },
-                          child: Text('Delete'),
+                          child: Text(
+                            'Delete',
+                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Set the text color for the delete button
+                          ),
                         ),
                       ],
                     ),
