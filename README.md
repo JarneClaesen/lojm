@@ -1,6 +1,6 @@
 ## Team
 
-Aantal studenten: 1 / 2
+Aantal studenten: 1
 
 Student 1: Jarne CLAESEN
 
