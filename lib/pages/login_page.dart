@@ -20,6 +20,17 @@ class _LoginPageState extends State<LoginPage> {
 
   // sign user in
   void signIn() async {
+
+    // Separate checks for email and password fields
+    if (emailTextController.text.isEmpty) {
+      displayErrorMessage('empty-email');
+      return;
+    }
+    if (passwordTextController.text.isEmpty) {
+      displayErrorMessage('empty-password');
+      return;
+    }
+
     if (_isLoading) return;
 
     setState(() {
@@ -50,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context, rootNavigator: true).pop();
         isDialogShowing = false;
       }
-      displayMessage(e.code);
+      displayErrorMessage(e.code); // Display custom error message
     } finally {
       if (context.mounted) {
         setState(() {
@@ -63,6 +74,35 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
+
+  void displayErrorMessage(String errorCode) {
+    String errorMessage;
+    switch (errorCode) {
+      case 'empty-email':
+        errorMessage = 'Please enter your email address.';
+        break;
+      case 'empty-password':
+        errorMessage = 'Please enter your password.';
+        break;
+      case 'invalid-email':
+        errorMessage = 'The email address is badly formatted.';
+        break;
+      case 'user-not-found':
+        errorMessage = 'There is no user corresponding to the given email.';
+        break;
+      case 'wrong-password':
+        errorMessage = 'The password is invalid for the given email.';
+        break;
+    // Add more cases as needed
+      default:
+        errorMessage = 'An unknown error occurred.';
+    }
+    // Display the error message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(errorMessage)),
+    );
+  }
+
 
   void sendPasswordResetEmail() async {
     if (emailTextController.text.isEmpty) {
