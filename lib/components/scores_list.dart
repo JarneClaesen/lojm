@@ -44,7 +44,7 @@ class ScoresList extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                       decoration: BoxDecoration(
                         borderRadius: StyleConstants.largeRoundedCorner,
-                        color: Theme.of(innerContext).colorScheme.primary,
+                        color: Theme.of(innerContext).colorScheme.primaryContainer,
                       ),
                       child: Row(
                         children: [
