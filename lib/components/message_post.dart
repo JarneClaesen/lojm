@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:orchestra_app/components/comment_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../helper/helper_methods.dart';
 import '../helper/style_constants.dart';
 import 'comment.dart';
 import 'delete_button.dart';
 import 'like_button.dart';
+import 'dart:core';
 
 class messagePost extends StatefulWidget {
 
@@ -41,7 +44,7 @@ class _messagePostState extends State<messagePost> {
   // user
   final currentUser = FirebaseAuth.instance.currentUser;
   bool isLiked = false;
-
+  var data;
 
   @override
   void initState() {
@@ -153,6 +156,15 @@ class _messagePostState extends State<messagePost> {
   }
 
   Widget _buildWallPost() {
+    String? url = _extractUrlFromString(widget.message);
+
+    // Build a text style for links
+    final linkStyle = TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+
+    // Get spans for text and links
+    final spans = _getTextSpans(widget.message, TextStyle(color: Theme.of(context).colorScheme.onSurface), linkStyle);
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -164,7 +176,44 @@ class _messagePostState extends State<messagePost> {
           ],
         ),
         const SizedBox(height: 5),
-        Text(widget.message),
+        // Check if URL is not null before showing the SimpleLinkPreview
+        if (url != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16), // Use the desired border radius
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              child: Transform.translate(
+                offset: Offset(0, 0),
+                child: LinkPreview(
+                  openOnPreviewImageTap: true,
+                  openOnPreviewTitleTap: true,
+                  text: url,
+                  onPreviewDataFetched: (dataFromUrl) {
+                    setState(() {
+                      data = dataFromUrl;
+                    });
+                  },
+                  previewData: data,
+                  width: MediaQuery.of(context).size.width,
+                  linkStyle: TextStyle(
+                    fontSize: 0, // Hides the link by setting the font size to zero
+                  ),
+                  metadataTextStyle: TextStyle(
+                    fontSize: 0, // Hides the metadata by setting the font size to zero
+                  ),
+                  padding: EdgeInsets.only(top: 0.01, left: 10, right: 10),
+                ),
+              ),
+            ),
+          ),
+        const SizedBox(height: 10),
+        RichText(
+          text: TextSpan(
+            children: spans,
+          ),
+        ),
       ],
     );
   }
@@ -196,5 +245,68 @@ class _messagePostState extends State<messagePost> {
       child: DeleteButton(onTap: deletePost),
     );
   }
+
+  String? _extractUrlFromString(String text) {
+    final RegExp urlExp = RegExp(
+      r'(\b(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\/[^\s]*)?\b)',
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    // Attempt to find a match in the given text.
+    final matches = urlExp.allMatches(text);
+    if (matches.isNotEmpty) {
+      // Return the first URL match found.
+      return matches.first.group(0);
+    }
+    return null; // Return null if no URL is found.
+  }
+
+  List<InlineSpan> _getTextSpans(String text, TextStyle style, TextStyle linkStyle) {
+    final RegExp urlExp = RegExp(
+      r'(\bhttps?:\/\/[\-A-Za-z0-9+&@#/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#/%=~_|])',
+      caseSensitive: false,
+    );
+
+    List<InlineSpan> spans = [];
+    text.splitMapJoin(
+      urlExp,
+      onMatch: (Match match) {
+        final String matchText = match[0]!;
+        spans.add(
+          WidgetSpan(
+            child: InkWell(
+              child: Text(
+                matchText,
+                style: linkStyle.copyWith(decoration: TextDecoration.underline),
+              ),
+              onTap: () async {
+                final Uri uri = Uri.parse(matchText);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                } else {
+                  // Handle the error or inform the user they cannot open the URL
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Could not launch $matchText'),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        );
+        return '';
+      },
+      onNonMatch: (String text) {
+        spans.add(TextSpan(text: text, style: style));
+        return '';
+      },
+    );
+    return spans;
+  }
+
+
+
 
 }
